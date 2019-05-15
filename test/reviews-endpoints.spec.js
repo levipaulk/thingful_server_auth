@@ -33,11 +33,19 @@ describe('Reviews Endpoints', function() {
       )
     )
 
-    it(`responds 401 'Unauthorized request' when invalid password`, () => {
-      const userInvalidPass = { user_name: testUsers[0].user_name, password: 'wrong' }
+    it(`responds 401 'Unauthorized request' when invalid token`, () => {
+      // const userInvalidPass = { user_name: testUsers[0].user_name, password: 'wrong' }
       return supertest(app)
         .post('/api/reviews')
-        .set('Authorization', helpers.makeAuthHeader(userInvalidPass))
+        .set('Authorization', 'Bearer bannanas')
+        .expect(401, { error: `Unauthorized request` })
+    })
+
+    it(`responds 401 'Unauthorized request' when invalid user`, () => {
+      const invalidUser = { user_name: 'banana', id: 1234 }
+      return supertest(app)
+        .post('/api/reviews')
+        .set('Authorization', helpers.makeAuthHeader(invalidUser))
         .expect(401, { error: `Unauthorized request` })
     })
 
